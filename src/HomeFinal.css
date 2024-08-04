@@ -1,37 +1,36 @@
-.Home-Section2{
-    margin-top: 10vh;
+.Home-Section2 {
+  margin-top: 10vh;
 }
 
-.Home-Section3{
-    margin-top: -20vh;
+.Home-Section3 {
+  margin-top: 0vh;
 }
-.scroll {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #ffffff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    padding: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: 0;
-    transform: scale(0.8);
-    z-index: 4;
-    font-size: 18px;
-    color: white;
-    z-index: 4;
-  }
-  
-  .scroll-to-top.show {
-    opacity: 1;
-    transform: scale(1);
-  }
-  
-  .scroll-to-top:hover {
-    background-color: #333;
-  }
-  
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff0000; /* Red background */
+  color: #fff; /* White icon color */
+  border: none;
+  border-radius: 50%;
+  padding: 15px; /* Increased padding to ensure enough space */
+  font-size: 24px; /* Increase font size for better visibility */
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: scale(0.8);
+  z-index: 1000;
+  display: flex; /* Flexbox to center the icon */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+}
+
+.scroll-to-top.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.scroll-to-top:hover {
+  background-color: #555; /* Darker background on hover */
+}

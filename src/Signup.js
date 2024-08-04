@@ -5,7 +5,7 @@ import './Signup.css';
 import img from './Images/Signup.jpeg';
 import useLocalStorage from 'use-local-storage';
 import { useUserCreateMutation } from './redux/features/auth/authApiSlice';
-import Modal from './Modal'; // Import Modal componen
+import Modal from './Modal'; 
 import { useUserCreateMutation } from '../src/redux/features/auth/authApiSlice';
 import { ContinueWithGoogle } from './components/ContinueWithGoogle';
 
@@ -58,7 +58,7 @@ function Signup() {
 
   const [userCreate] = useUserCreateMutation();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const passwordError = validatePassword(formData.password, formData.confirmPassword);
     if (passwordError) {
@@ -70,34 +70,91 @@ function Signup() {
     document.getElementById('password').setCustomValidity('');
     document.getElementById('confirmPassword').setCustomValidity('');
 
-
     setIsModalOpen(true); // Show modal when form is submitted
 
-    // Uncomment and adjust the following lines once sign-up logic is ready
-    /*
-    userCreate({
-      first_name: formData.firstname,
-      last_name: formData.lastname,
-      email: formData.email,
-      password: formData.password,
-      re_password: formData.confirmPassword
-    }).unwrap().then((result) => {
+    try {
+      await userCreate({
+        first_name: formData.firstname,
+        last_name: formData.lastname,
+        email: formData.email,
+        password: formData.password,
+        re_password: formData.confirmPassword
+      }).unwrap();
       navigate('/Success');
-    }).catch((err) => {
+    } catch (err) {
       setError(err.message || 'An error occurred');
-    });
-    */
+    }
   };
 
   const closeModal = () => {
     setIsModalOpen(false); // Close modal function
   };
 
+  const generateState = () => {
+    return btoa(crypto.getRandomValues(new Uint32Array(1)).toString());
+  };
+
+  const handleGoogleSuccess = async ({ code, state }) => {
+    try {
+      const storedState = sessionStorage.getItem('oauth_state');
+  
+      if (!code || !state) {
+        throw new Error('Authorization code or state not found');
+      }
+  
+      if (state !== storedState) {
+        throw new Error('State parameter does not match');
+      }
+  
+      const url = 'http://localhost:8000/api/o/google-oauth2/';
+  
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code, state }) // Send the authorization code and state to your backend
+      });
+  
+      const data = await res.json();
+      console.log('Backend response:', data);
+  
+      if (data.success) {
+        navigate('/');
+      } else {
+        // Handle error response from backend
+        setError(data.message || 'An error occurred');
+      }
+    } catch (error) {
+      console.error('Error during Google Sign-In:', error);
+      // Handle client-side error
+      setError('An error occurred during Google Sign-In');
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    console.error('Google Sign-In Error:', error);
+    setError('Google Sign-In failed. Please try again.');
+  };
+
   const [isDark] = useLocalStorage("isDark", false);
 
+  const initiateGoogleSignIn = () => {
+    const state = generateState();
+    sessionStorage.setItem('oauth_state', state);
+  
+    const clientId = 'YOUR_CLIENT_ID'; // Replace with your actual client ID
+    const redirectUri = 'http://localhost:3000/auth/google'; 
+    const scope = 'profile email';
+    const responseType = 'code';
+  
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+  
+    window.location.href = googleAuthUrl; 
+  };
 
   return (
-    <GoogleOAuthProvider clientId={CLIENT_ID}>
+    <GoogleOAuthProvider clientId='YOUR_CLIENT_ID'> {/* Replace with your actual client ID */}
       <div className='Logindiv' data-theme={isDark ? "dark" : "light"}>
         <div className="LoginContainer">
           <div className="image-container">
@@ -191,9 +248,8 @@ function Signup() {
             <div className='Signup2'>Have an account?<span className='SignupSpan'><Link to="/Login"> Login here</Link></span></div>
           </div>
         </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal} /> {/* Add Modal component */}
       </div>
-      <Modal isOpen={isModalOpen} onClose={closeModal} /> {/* Add Modal component */}
-    </div>
     </GoogleOAuthProvider>
   );
 }

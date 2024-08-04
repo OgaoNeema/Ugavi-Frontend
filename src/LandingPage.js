@@ -28,6 +28,13 @@ function LandingPage() {
     };
   }, []);
 
+  const solutions = [
+    { imgSrc: Traceability, text: 'TRACEABILITY AND TRANSPARENCY' },
+    { imgSrc: Realtime, text: 'REAL-TIME MONITORING' },
+    { imgSrc: SupplyChainOptImage, text: 'SUPPLY CHAIN OPTIMIZATION' },
+    { imgSrc: DataAnalysis, text: 'DATA-DRIVEN DECISION MAKING' },
+  ];
+
   return (
     <div className="landing-page">
       <header className="header">
@@ -41,7 +48,7 @@ function LandingPage() {
             <p>At Supply2U, we enhance your supply chain with 
               advanced real-time tracking, geolocation, analytics, 
               and retail insights. Our cutting-edge technology provides
-               unmatched visibility and control from production to consumption.</p>
+              unmatched visibility and control from production to consumption.</p>
           </div>
         </div>
         <div className="white-separator"></div>
@@ -60,22 +67,18 @@ function LandingPage() {
       <section className="solutions fade-in">
         <h2>OUR <span className="green-text">SOLUTIONS</span></h2>
         <div className="solutions-container">
-          <div className="solution">
-            <img src={Traceability} alt="Traceability and Transparency" />
-            <p>TRACEABILITY AND TRANSPARENCY</p>
-          </div>
-          <div className="solution">
-            <img src={Realtime} alt="Real-Time Monitoring" />
-            <p>REAL-TIME MONITORING</p>
-          </div>
-          <div className="solution">
-            <img src={SupplyChainOptImage} alt="Supply Chain Optimization" />
-            <p>SUPPLY CHAIN OPTIMIZATION</p>
-          </div>
-          <div className="solution">
-            <img src={DataAnalysis} alt="Data-Driven Decision Making" />
-            <p>DATA-DRIVEN DECISION MAKING</p>
-          </div>
+          {solutions.map((solution, index) => (
+            <div className="solution flip-container" key={index}>
+              <div className="flipper">
+                <div className="front">
+                  <img src={solution.imgSrc} alt={solution.text} />
+                </div>
+                <div className="back">
+                  <p>{solution.text}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>
